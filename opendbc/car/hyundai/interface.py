@@ -135,6 +135,15 @@ class CarInterface(CarInterfaceBase):
     ret.startAccel = 1.0
     ret.longitudinalActuatorDelay = 0.5
 
+    #  FIX IONIQ 5 EU VARIANT
+    if candidate == CAR.HYUNDAI_IONIQ_5:
+      # Force vision-only config
+      ret.radarUnavailable = True
+      ret.openpilotLongitudinalControl = False
+      ret.pcmCruise = True
+      if len(ret.safetyConfigs) > 0:
+        ret.safetyConfigs[-1].safetyParam &= ~HyundaiSafetyFlags.LONG.value   
+    
     if ret.openpilotLongitudinalControl:
       ret.safetyConfigs[-1].safetyParam |= HyundaiSafetyFlags.LONG.value
     if ret.flags & HyundaiFlags.HYBRID:
